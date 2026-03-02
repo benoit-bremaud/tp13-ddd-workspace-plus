@@ -19,3 +19,9 @@ Schémas et diagrammes illustrant le modèle :
 - `entity-relationships.mmd` - Relations entre entités
 
 ### `/docs/`
+Documentation générale et métadonnées du projet :
+- `project-structure.md` - Organisation des fichiers et dossiers
+- `workflow-guidelines.md` - Guidelines de workflow et conventions Git
+- `project-roadmap.md` - Planning et suivi d'avancement
+- `glossary.md` - Dictionnaire des termes métier (Ubiquitous Language)
+- `architecture-document.md` - Document d'architecture final
