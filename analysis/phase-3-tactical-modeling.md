@@ -434,10 +434,260 @@ Service RefundCalculationService {
 }
 ```
 
-## Conclusion Intermédiaire
+## 3.5 Agrégats : Frontières de Cohérence et Protection des Invariants
 
-Cette analyse des Entités, Value Objects et Services de Domaine établit la **structure tactique** de l'architecture DDD WorkSpace+. 
+Les agrégats définissent les **frontières transactionnelles** et de **cohérence** du modèle DDD. Ils regroupent les entités et value objects dont la cohérence métier doit être garantie **atomiquement**.
 
-La section suivante (3.4) abordera les **Agrégats** : comment organiser ces concepts en frontières de cohérence pour protéger les invariants métier critiques.
+Un agrégat n'est pas un simple regroupement technique mais une **décision architecturale stratégique** qui détermine :
+- Ce qui peut être modifié ensemble dans une même transaction
+- Quels invariants métier sont protégés
+- Comment les règles business sont maintenues cohérentes
 
-Chaque décision architecturale prise ici **s'aligne avec le Core Domain** identifié et **respecte l'Ubiquitous Language** établi, garantissant une implémentation fidèle à la réalité métier de WorkSpace+.
+### Agrégat Réservation
+
+**Racine d'agrégat :** Réservation (Entité)
+
+**Entités internes :** Aucune (agrégat simple mais riche en comportements)
+
+**Value Objects inclus :**
+- Créneau (période de la réservation)
+- Money (montant de la réservation)
+- MotifAnnulation (si applicable)
+
+**Invariants protégés :**
+1. **Cohérence temporelle** : Le créneau doit être valide et respecter les règles métier
+2. **Intégrité financière** : Le montant dû doit être cohérent avec le type d'espace et la durée
+3. **Workflow d'état** : Les transitions d'état doivent suivre les règles métier (Provisoire → Confirmée → ...)
+4. **Unicité membre** : Un membre ne peut avoir qu'une seule réservation Provisoire simultanée
+
+**Raison d'être :** Une réservation est une unité métier atomique. Sa cohérence interne (créneau, montant, état) doit être garantie à tout instant. L'espace réservé n'appartient pas à cet agrégat car il a son propre cycle de vie et ses propres invariants.
+
+**Commandes métier :**
+```
+Agrégat Réservation {
+  // Factory method
+  static creerReservationProvisoire(
+    MembreId, EspaceId, Créneau
+  ) : Réservation
+  
+  // Comportements
+  confirmerAvecPaiement(PaiementDetails) : void
+  annuler(MotifAnnulation) : MontantRemboursement
+  prolonger(NouvelleDurée) : void
+  expirer() : void
+}
+```
+
+### Agrégat Membre
+
+**Racine d'agrégat :** Membre (Entité)
+
+**Entités internes :** 
+- Abonnement (peut être null si pas d'abonnement actif)
+
+**Value Objects inclus :**
+- Adresse (adresse de facturation)
+- HistoriqueStatuts (évolution des états du membre)
+- PreferencesMembre (préférences utilisateur)
+
+**Invariants protégés :**
+1. **Cohérence abonnement-membre** : Un abonnement actif ne peut exister sans membre actif
+2. **Règles de suspension** : Un membre suspendu ne peut effectuer de nouvelles réservations
+3. **Intégrité des crédits** : Les crédits d'abonnement ne peuvent être négatifs
+4. **Données RGPD** : La cohérence des données personnelles selon l'état du membre
+
+**Justification regroupement :** Le membre et son abonnement forment une unité métier cohérente. L'abonnement n'a pas de sens sans le membre et vice-versa pour les calculs de remises et la gestion des crédits.
+
+**Commandes métier :**
+```
+Agrégat Membre {
+  // Factory methods
+  static inscrireNouveauMembre(
+    Informations, TypeAbonnement
+  ) : Membre
+  
+  // Comportements
+  souscrireAbonnement(TypeAbonnement) : void
+  resilierAbonnement(MotifResiliation) : void
+  suspendreAcces(Motif, DureePrevue) : void
+  reactiverAcces() : void
+  calculerRemiseDisponible(TypeEspace) : Percentage
+}
+```
+
+**Note importante :** Les Réservations ne font PAS partie de cet agrégat. Elles ont leur propre cycle de vie et peuvent être créées/modifiées indépendamment du membre. Seule une référence `MembreId` les lie.
+
+### Agrégat Site
+
+**Racine d'agrégat :** Site (Entité)
+
+**Entités internes :**
+- Collection d'Espaces (les espaces appartiennent au site)
+
+**Value Objects inclus :**
+- Adresse (localisation du site)
+- HorairesOuverture (plages horaires d'exploitation)
+- PolitiquesLocales (règles spécifiques au site)
+
+**Invariants protégés :**
+1. **Cohérence horaires-réservations** : Les réservations ne peuvent excéder les horaires d'ouverture
+2. **États cohérents site-espaces** : Un site fermé ne peut avoir d'espaces disponibles
+3. **Capacité globale** : La somme des capacités des espaces ne peut excéder les limites physiques
+4. **Politiques cohérentes** : Les politiques locales ne peuvent contredire les politiques globales
+
+**Justification regroupement :** Un site et ses espaces forment une unité physique et administrative cohérente. Les règles d'ouverture, de maintenance et de gestion s'appliquent de manière transversale.
+
+**Commandes métier :**
+```
+Agrégat Site {
+  // Factory method
+  static ouvrirNouveauSite(
+    Adresse, HorairesOuverture, GestionnaireResponsable
+  ) : Site
+  
+  // Comportements
+  ajouterEspace(TypeEspace, Caracteristiques) : Espace
+  retirerEspace(EspaceId) : void
+  planifierMaintenanceSite(Période) : void
+  modifierHorairesOuverture(NouveauxHoraires) : void
+  calculerTauxOccupationGlobal(Période) : Percentage
+}
+```
+
+### Décisions de Frontières Critiques
+
+#### Pourquoi Réservation et Espace sont des Agrégats Séparés ?
+
+**Justification :** Bien que liés fonctionnellement, ils ont des cycles de vie différents :
+- Un Espace existe indépendamment des réservations (création, modification, maintenance)
+- Une Réservation a sa propre logique de workflow (provisoire, confirmée, annulée)
+- La performance : éviter les verrous concurrents sur l'espace pour chaque réservation
+
+**Communication inter-agrégats :** Via des événements de domaine
+```
+Événement : ReservationConfirmée(ReservationId, EspaceId, Créneau)
+Événement : ReservationAnnulée(ReservationId, EspaceId, Créneau)
+```
+
+#### Pourquoi Abonnement n'est PAS un Agrégat Indépendant ?
+
+**Justification :** Contrairement à l'analyse initiale de la Phase 2, l'Abonnement est mieux modélisé comme entité interne au Membre :
+- Les crédits et remises n'ont de sens qu'avec un membre actif
+- Les règles de renouvellement dépendent de l'état du membre
+- La cohérence transactionnelle membre-abonnement est critique pour le Core Domain
+
+### Analyse des Invariants Métier Critiques
+
+#### Invariant : Pas de Double Réservation
+
+**Énoncé :** Un espace ne peut être réservé par plusieurs membres sur des créneaux qui se chevauchent.
+
+**Protection :** 
+- Cet invariant ne peut être protégé au niveau d'un seul agrégat
+- Solution : Utilisation d'un service de domaine `ConflictDetectionService`
+- Implémentation via verrouillage optimiste ou événements de domaine
+
+#### Invariant : Cohérence Crédits-Consommation
+
+**Énoncé :** Un membre ne peut consommer plus de crédits qu'il n'en dispose via son abonnement.
+
+**Protection :** Protégé dans l'agrégat Membre lors de la création de réservation
+- Vérification avant création de la réservation provisoire
+- Réservation des crédits pendant le statut Provisoire
+- Consommation définitive lors de la confirmation
+
+#### Invariant : Intégrité Financière
+
+**Énoncé :** Le montant d'une réservation confirmée doit être cohérent avec les politiques tarifaires en vigueur.
+
+**Protection :** 
+- Calcul via `PricingService` lors de la création
+- Recalcul et validation lors de la confirmation de paiement
+- Immutabilité du montant après confirmation (sauf annulation)
+
+## 3.6 Architecture Tactique : Vue d'Ensemble
+
+### Diagramme Conceptuel des Relations
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    AGRÉGAT MEMBRE                           │
+│  ┌─────────────┐         ┌─────────────────────────────┐   │
+│  │   Membre    │◆────────│      Abonnement             │   │
+│  │             │         │  - Collection<Crédit>       │   │
+│  │             │         │  - calculerRemise()         │   │
+│  └─────────────┘         └─────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────┘
+                    │ MembreId
+                    │
+                    ▼ (référence)
+┌─────────────────────────────────────────────────────────────┐
+│                  AGRÉGAT RÉSERVATION                        │
+│  ┌─────────────┐    ┌──────────┐    ┌─────────────────┐   │
+│  │ Réservation │◆───│ Créneau  │    │     Money       │   │
+│  │             │    │          │    │                 │   │
+│  │             │    └──────────┘    └─────────────────┘   │
+│  └─────────────┘         EspaceId (référence)             │
+└─────────────────────────────────────────────────────────────┘
+                    │ EspaceId
+                    │
+                    ▼ (référence)
+┌─────────────────────────────────────────────────────────────┐
+│                    AGRÉGAT SITE                             │
+│  ┌─────────────┐         ┌─────────────────────────────┐   │
+│  │    Site     │◆────────│        Espace               │   │
+│  │             │         │  - calculerTarif()          │   │
+│  │             │         │  - verifierDisponibilité()  │   │
+│  └─────────────┘         └─────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Services de Domaine et Orchestration
+
+Les services de domaine coordonnent les opérations qui croisent plusieurs agrégats :
+
+```
+PricingService:
+  calculerPrixReservation(EspaceId, Créneau, MembreId)
+  → Interroge Agrégat Site pour Espace
+  → Interroge Agrégat Membre pour Abonnement
+  → Retourne Money calculé
+
+AvailabilityCalculator:
+  verifierDisponibilité(EspaceId, Créneau)
+  → Interroge Agrégat Site pour Espace
+  → Interroge Repository Réservation pour conflits
+  → Retourne Boolean
+
+RefundCalculationService:
+  calculerRemboursement(ReservationId, DateAnnulation)
+  → Interroge Agrégat Réservation pour détails
+  → Interroge Agrégat Membre pour type abonnement
+  → Retourne Money remboursé
+```
+
+## Conclusion de la Phase 3
+
+Cette modélisation tactique transforme le vocabulaire métier établi en Phase 2 en **architecture DDD concrète et opérationnelle**.
+
+### Décisions Architecturales Clés
+
+1. **3 Agrégats principaux** avec frontières métier justifiées
+2. **5 Entités** avec identité et cycle de vie définis  
+3. **4 Value Objects** protégeant les invariants critiques
+4. **3 Services de Domaine** orchestrant la logique transversale
+
+### Alignement Stratégique
+
+- **Core Domain** : Les services PricingService et la logique d'Abonnement portent la différenciation tarifaire
+- **Supporting Domains** : Réservation et Espace modélisés avec architecture propre mais standard
+- **Ubiquitous Language** : Chaque concept architectural respecte exactement le vocabulaire établi
+
+### Préparation Phase 4
+
+Cette architecture tactique sera organisée en **Bounded Contexts** cohérents, permettant :
+- La séparation des responsabilités à grande échelle
+- L'évolution indépendante des sous-domaines
+- L'intégration avec les systèmes externes et partenaires franchisés
+
+La Phase 3 établit les **fondations techniques** sur lesquelles la Phase 4 construira l'**architecture distribuée** de WorkSpace+.
