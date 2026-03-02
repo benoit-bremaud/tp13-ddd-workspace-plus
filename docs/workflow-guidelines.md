@@ -17,15 +17,16 @@
 - **Livrables** : 
   - `analysis/phase-1-core-domain.md` (analyse argumentée)
   - `diagrams/domain-overview.mmd` (diagramme stratégique)
-- **PR** : #1 - En attente de validation
-- **Statut** : ✅ Terminée - Attente validation
+- **PR** : #1 - Mergée
+- **Statut** : ✅ Terminée
 
 #### Phase 2 - Ubiquitous Language
 - **Branche** : `feat/phase-2-ubiquitous-language`  
 - **Livrables** :
   - `analysis/phase-2-ubiquitous-language.md`
   - `docs/glossary.md` (dictionnaire des termes)
-- **Statut** : 🔄 À démarrer après validation Phase 1
+- **PR** : #2 - Mergée
+- **Statut** : ✅ Terminée
 
 #### Phase 3 - Modélisation Tactique
 - **Branche** : `feat/phase-3-tactical-modeling`
@@ -34,28 +35,32 @@
   - `diagrams/entities-value-objects.mmd`
   - `diagrams/aggregates.mmd`
   - `diagrams/domain-services.mmd`
-- **Statut** : ⏳ Planifiée
+- **PR** : #3 - Mergée
+- **Statut** : ✅ Terminée
 
 #### Phase 4 - Bounded Contexts
 - **Branche** : `feat/phase-4-bounded-contexts`
 - **Livrables** :
   - `analysis/phase-4-bounded-contexts.md`
   - `diagrams/context-map.mmd`
-- **Statut** : ⏳ Planifiée
+- **PR** : #4 - Mergée
+- **Statut** : ✅ Terminée
 
 #### Phase 5 - Validation Cas d'Usage
 - **Branche** : `feat/phase-5-use-cases-validation`
 - **Livrables** :
   - `analysis/phase-5-use-cases.md`
   - `diagrams/use-cases-flow.mmd`
-- **Statut** : ⏳ Planifiée
+- **PR** : #5 - Mergée
+- **Statut** : ✅ Terminée
 
 #### Phase 6 - Livrable Final
 - **Branche** : `feat/phase-6-final-deliverable`
 - **Livrables** :
   - `analysis/phase-6-synthesis.md`
   - `docs/architecture-document.md` (document final)
-- **Statut** : ⏳ Planifiée
+- **PR** : #6 - En préparation
+- **Statut** : 🔄 En cours
 
 ## Convention de Commits
 

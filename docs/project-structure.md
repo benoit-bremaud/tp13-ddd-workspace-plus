@@ -14,9 +14,10 @@ Contient les analyses détaillées pour chaque phase du TP :
 ### `/diagrams/`
 Schémas et diagrammes illustrant le modèle :
 - `domain-overview.mmd` - Vue d'ensemble du domaine
+- `entities-value-objects.mmd` - Entités et Value Objects du modèle tactique
 - `aggregates.mmd` - Diagrammes des agrégats
 - `context-map.mmd` - Carte des contextes bornés
-- `entity-relationships.mmd` - Relations entre entités
+- `use-cases-flow.mmd` - Flux de validation des cas d'usage critiques
 
 ### `/docs/`
 Documentation générale et métadonnées du projet :

@@ -30,6 +30,17 @@ Ce travail adopte une posture d'architecte logiciel, en privilégiant la compré
 └── README.md       # Ce fichier
 ```
 
+### Livrables principaux
+
+- `analysis/phase-1-core-domain.md` à `analysis/phase-6-synthesis.md`
+- `docs/architecture-document.md` (synthèse finale professionnelle)
+- Diagrammes Mermaid :
+  - `diagrams/domain-overview.mmd`
+  - `diagrams/entities-value-objects.mmd`
+  - `diagrams/aggregates.mmd`
+  - `diagrams/context-map.mmd`
+  - `diagrams/use-cases-flow.mmd`
+
 ## Phases de Travail
 
 1. **Analyse Stratégique** - Identification du Core Domain
@@ -45,6 +56,12 @@ Ce travail adopte une posture d'architecte logiciel, en privilégiant la compré
 - Commits fréquents avec convention Angular
 - Pull requests détaillées pour chaque phase
 - Validation par review avant merge
+
+## État d'avancement
+
+- ✅ Phases 1 à 6 réalisées
+- ✅ Validation par cas d'usage critiques effectuée
+- ✅ Document d'architecture final livré
 
 ---
 
