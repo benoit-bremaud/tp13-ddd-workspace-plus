@@ -1,0 +1,45 @@
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+*~
+
+# Build artifacts
+build/
+dist/
+target/
+
+# Dependencies
+node_modules/
+vendor/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Documentation builds
+_site/
+.jekyll-metadata
+.bundle/
+
+# Diagram exports
+*.png
+*.jpg
+*.jpeg
+!diagrams/*.png
+!diagrams/*.jpg
+!diagrams/*.jpeg
