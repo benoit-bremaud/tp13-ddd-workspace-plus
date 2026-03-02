@@ -6,7 +6,7 @@ La Phase 3 marque la transition cruciale entre la **compréhension stratégique*
 
 L'objectif n'est plus seulement de **nommer** les concepts métier, mais de déterminer **comment ils collaborent** pour protéger les invariants business et encapsuler la complexité métier différenciante de WorkSpace+.
 
-Cette phase applique les patterns tactiques du DDD : Entités, Value Objects, Agrégats, et Services de Domaine. Chaque décision architectural doit être **justifiée métier** et **alignée** avec le Core Domain identifié.
+Cette phase applique les patterns tactiques du DDD : Entités, Value Objects, Agrégats, et Services de Domaine. Chaque décision architecturale doit être **justifiée métier** et **alignée** avec le Core Domain identifié.
 
 ## 3.1 Entités : Identité et Cycle de Vie Métier
 
@@ -34,8 +34,8 @@ Une entité DDD possède une **identité propre** qui persiste dans le temps, in
 ```
 Entité Réservation {
   confirmer(PaiementDetails) : void
-  annuler(MotifAnnulation) : MontantRemboursement
-  prolonger(NouvelleDuree) : Réservation
+  annuler(MotifAnnulation) : Money
+  prolonger(NouvelleDuree) : void
   calculerMontantDu() : Money
   verifierEligibiliteAnnulation() : Boolean
 }
@@ -64,10 +64,10 @@ Entité Réservation {
 ```
 Entité Membre {
   souscrireAbonnement(TypeAbonnement) : Abonnement
-  effectuerReservation(Espace, Créneau) : Réservation
+  effectuerReservation(EspaceId, Créneau) : Réservation
   consulterHistorique(Période) : Collection<Réservation>
   calculerStatutLoyauté() : StatutLoyauté
-  appliquerSuspension(Motif) : void
+  suspendre(Motif) : void
 }
 ```
 
@@ -229,16 +229,16 @@ Value Object Créneau {
 **Implémentation conceptuelle :**
 ```
 Value Object Crédit {
-  Valeur : Money
+  Quantité : decimal
   Type : TypeCrédit (Heures, Euros, Points)
   DateExpiration : Date
   
   estValide(DateCourante) : Boolean
-  peutCouvrir(Montant) : Boolean
-  calculerReliquat(Consommation) : Crédit
+  peutCouvrir(QuantitéDemandée : decimal) : Boolean
+  calculerReliquat(Consommation : decimal) : Crédit
   
   Invariant : DateExpiration > DateCréation
-  Invariant : Valeur.Montant >= 0
+  Invariant : Quantité >= 0
 }
 ```
 
@@ -472,7 +472,7 @@ Agrégat Réservation {
   
   // Comportements
   confirmerAvecPaiement(PaiementDetails) : void
-  annuler(MotifAnnulation) : MontantRemboursement
+  annuler(MotifAnnulation) : Money
   prolonger(NouvelleDurée) : void
   expirer() : void
 }

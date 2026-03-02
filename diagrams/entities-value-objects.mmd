@@ -92,12 +92,12 @@ classDiagram
     
     class Crédit {
         <<Value Object>>
-        -Money valeur
+        -decimal quantité
         -TypeCrédit type
         -Date dateExpiration
         +estValide(Date) Boolean
-        +peutCouvrir(Money) Boolean
-        +calculerReliquat(Money) Crédit
+        +peutCouvrir(decimal) Boolean
+        +calculerReliquat(decimal) Crédit
     }
     
     class Adresse {
