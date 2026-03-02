@@ -21,7 +21,7 @@ La validation repose sur des cas d'usage orientés métier, dérivés directemen
 
 1. **Validité fonctionnelle** : le flux métier aboutit au résultat attendu.
 2. **Protection des invariants** : les règles critiques ne peuvent pas être contournées.
-3. **Cohérence inter-contextes** : les échanges entre contexts restent maîtrisés.
+3. **Cohérence inter-contextes** : les échanges entre contextes restent maîtrisés.
 4. **Résilience** : les erreurs et interruptions sont traitées sans incohérence.
 
 ### Références utilisées
@@ -36,7 +36,7 @@ La validation repose sur des cas d'usage orientés métier, dérivés directemen
 
 ## 5.2 Matrice de couverture
 
-| Cas d'usage | Objectif métier | Contexts impliqués | Invariants validés | Pattern de consistance |
+| Cas d'usage | Objectif métier | Contextes impliqués | Invariants validés | Pattern de consistance |
 |---|---|---|---|---|
 | UC-01 Réservation confirmée | Réserver un espace avec paiement réussi | Booking, Space, Pricing, Analytics | Pas de confirmation sans paiement ; pas de créneau invalide | Saga + lock distribué |
 | UC-02 Conflit concurrent | Empêcher la double réservation | Booking, Space | Un espace ne peut pas être réservé deux fois sur un créneau chevauchant | Strong consistency |
@@ -202,7 +202,7 @@ La validation repose sur des cas d'usage orientés métier, dérivés directemen
 ### Invariants validés
 
 - Un membre `Suspendu` ne peut pas initier de nouvelle réservation.
-- Le statut d'abonnement est propagé de manière traçable entre contexts.
+- Le statut d'abonnement est propagé de manière traçable entre contextes.
 
 ### Verdict
 

@@ -57,7 +57,7 @@ La gouvernance terminologique est portée par `docs/glossary.md`.
 
 ## 4. Modélisation tactique
 
-## 4.1 Entités clés
+### 4.1 Entités clés
 
 - **Membre** : identité métier client, statut et droits.
 - **Abonnement** : cycle de vie propre (Actif, Suspendu, Expiré, Résilié).
@@ -65,14 +65,14 @@ La gouvernance terminologique est portée par `docs/glossary.md`.
 - **Espace** : ressource réservable.
 - **Site** : agrégation des espaces et politiques locales.
 
-## 4.2 Value Objects clés
+### 4.2 Value Objects clés
 
 - **Money** : sécurité des calculs monétaires.
 - **Créneau** : cohérence temporelle.
 - **Crédit** : unités de consommation d'abonnement.
 - **Adresse** : données géographiques immuables.
 
-## 4.3 Agrégats et invariants
+### 4.3 Agrégats et invariants
 
 - **Agrégat Membre** (incluant Abonnement)
 - **Agrégat Réservation**
@@ -85,7 +85,7 @@ Invariants majeurs :
 - pas de consommation de crédit invalide ;
 - pas de nouvelles réservations si abonnement suspendu.
 
-## 4.4 Services de domaine
+### 4.4 Services de domaine
 
 - **PricingService**
 - **AvailabilityCalculator**
@@ -97,21 +97,21 @@ Ces services encapsulent la logique métier transversale non attribuable à un s
 
 ## 5. Architecture des Bounded Contexts
 
-## 5.1 Contextes définis
+### 5.1 Contextes définis
 
 1. **Pricing & Subscription Management** (Core)
 2. **Booking & Reservation Management**
 3. **Space & Facility Management**
 4. **Analytics & Reporting**
 
-## 5.2 Relations et patterns d'intégration
+### 5.2 Relations et patterns d'intégration
 
 - `Pricing -> Booking` : **Customer/Supplier**
 - `Space -> Booking` : **Customer/Supplier**
 - `Analytics <- [Pricing, Booking, Space]` : **Conformist**
 - systèmes externes : **Anti-Corruption Layers** (paiement, calendrier, IoT futur)
 
-## 5.3 Consistance distribuée
+### 5.3 Consistance distribuée
 
 - **Strong consistency** via lock distribué pour conflits de réservation.
 - **Saga + compensation** pour les workflows longs (réservation/paiement/remboursement).
@@ -145,14 +145,14 @@ Résultats : invariants principaux validés, cohérence inter-contextes confirm�
 
 ## 8. Risques et recommandations
 
-## 8.1 Risques résiduels
+### 8.1 Risques résiduels
 
 - dérive de tarification pendant paiement en cours ;
 - doubles traitements lors de retries externes ;
 - dérive de contrats d'événements entre contextes ;
 - manque de SLA explicites sur lock distribué.
 
-## 8.2 Recommandations prioritaires
+### 8.2 Recommandations prioritaires
 
 1. introduire un `TarificationSnapshot` versionné côté Booking ;
 2. imposer des clés d'idempotence métier pour paiement/remboursement ;
