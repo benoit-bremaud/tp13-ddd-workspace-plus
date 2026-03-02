@@ -29,7 +29,7 @@ Ce glossaire constitue la source unique de vérité pour tous les concepts méti
 ### Crédit
 **Définition :** Unité de valeur accordée par un abonnement et consommée lors des réservations selon des règles métier spécifiques.
 
-**Type DDD :** Value Object immutable
+**Type DDD :** Value Object immuable
 
 **Types possibles :** `Heures`, `Jours`, `Euros`
 
@@ -148,9 +148,9 @@ Ce glossaire constitue la source unique de vérité pour tous les concepts méti
 ## 📊 Règles Métier Transversales
 
 ### Politique de Réservation
-- **Anticipation maximum :** 30 jours pour membres Standard, 60 jours pour Premium
-- **Durée minimum :** 30 minutes
-- **Durée maximum :** 8 heures pour bureaux privés, 4 heures pour salles de réunion
+- **Anticipation maximale :** 30 jours pour membres Standard, 60 jours pour Premium
+- **Durée minimale :** 30 minutes
+- **Durée maximale :** 8 heures pour bureaux privés, 4 heures pour salles de réunion
 - **Annulation gratuite :** Jusqu'à 2 heures avant pour Premium, 4 heures pour Standard
 
 ### Politique Tarifaire (Core Domain)
