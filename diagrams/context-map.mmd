@@ -1,0 +1,168 @@
+graph TB
+    %% Bounded Contexts
+    subgraph "🏆 CORE DOMAIN"
+        PRICING["`**Pricing & Subscription**
+        **Management Context**
+        
+        📋 **Responsabilités:**
+        • Politiques tarifaires intelligentes
+        • Gestion cycles abonnement  
+        • Calculs remises & fidélité
+        
+        🔧 **Agrégats:**
+        • Membre (+ Abonnement)
+        • Collection Crédits
+        
+        ⚙️ **Services:**
+        • PricingService
+        • SubscriptionLifecycleService
+        • LoyaltyCalculatorService`"]
+    end
+    
+    subgraph "🛠️ SUPPORTING DOMAINS"
+        BOOKING["`**Booking & Reservation**
+        **Management Context**
+        
+        📋 **Responsabilités:**
+        • Cycle de vie réservations
+        • Gestion conflits & workflows
+        • Politiques annulation
+        
+        🔧 **Agrégats:**
+        • Réservation
+        • Value Objects (Créneau, Money)
+        
+        ⚙️ **Services:**
+        • ConflictDetectionService
+        • RefundCalculationService
+        • ReservationWorkflowService`"]
+        
+        SPACE["`**Space & Facility**
+        **Management Context**
+        
+        📋 **Responsabilités:**
+        • Gestion patrimoine immobilier
+        • Administration sites
+        • Maintenance & optimisation
+        
+        🔧 **Agrégats:**
+        • Site (+ Espaces)
+        • Value Objects (Adresse, Horaires)
+        
+        ⚙️ **Services:**
+        • AvailabilityCalculator
+        • OccupancyOptimizationService
+        • MaintenanceSchedulingService`"]
+    end
+    
+    subgraph "📊 GENERIC SUBDOMAIN"
+        ANALYTICS["`**Analytics & Reporting**
+        **Context**
+        
+        📋 **Responsabilités:**
+        • Consolidation données
+        • KPI métier & reporting
+        • Analyses prédictives
+        
+        🔧 **Modèles:**
+        • Vues agrégées
+        • Projections événements
+        
+        ⚙️ **Services:**
+        • PerformanceAnalysisService
+        • PredictiveAnalyticsService
+        • ReportingService`"]
+    end
+    
+    %% Relations Customer/Supplier
+    PRICING -->|Customer/Supplier| BOOKING
+    SPACE -->|Customer/Supplier| BOOKING
+    
+    %% Relations Conformist
+    PRICING -.->|Conformist| ANALYTICS
+    BOOKING -.->|Conformist| ANALYTICS  
+    SPACE -.->|Conformist| ANALYTICS
+    
+    %% Systèmes externes avec ACL
+    subgraph "🌐 SYSTÈMES EXTERNES"
+        PAY["`**Payment**
+        **Systems**`"]
+        CAL["`**Calendar**
+        **Systems**`"]
+        IOT["`**IoT Sensors**
+        **(Future)**`"]
+    end
+    
+    %% Anti-Corruption Layers
+    PRICING <-->|ACL| PAY
+    BOOKING <-->|ACL| CAL
+    SPACE <-->|ACL| IOT
+    
+    %% Event Store pour Analytics
+    subgraph "💾 EVENT STORE"
+        EVENTS["`**Event Stream**
+        
+        • ReservationConfirmed
+        • PricingRuleChanged  
+        • SpaceStatusChanged
+        • MemberSubscriptionChanged`"]
+    end
+    
+    PRICING -.->|Publish| EVENTS
+    BOOKING -.->|Publish| EVENTS
+    SPACE -.->|Publish| EVENTS
+    EVENTS -.->|Subscribe| ANALYTICS
+    
+    %% Extension Franchising (Future)
+    subgraph "🔮 FUTURE: FRANCHISE ARCHITECTURE"
+        SHARED["`**Shared Services**
+        
+        • Payment Gateway Integration
+        • Identity & Authentication  
+        • Notification Service
+        • Global Analytics Aggregation`"]
+        
+        FRANCHISE["`**Per-Franchise Instances**
+        
+        • Pricing Context (isolated)
+        • Booking Context (isolated)
+        • Space Context (isolated)
+        
+        **Benefits:**
+        • Data isolation
+        • Custom policies
+        • Independent scaling`"]
+    end
+    
+    PRICING -.->|Evolution| FRANCHISE
+    SHARED -.->|Mutualized| FRANCHISE
+    
+    %% Légendes des patterns
+    subgraph "📋 INTEGRATION PATTERNS LEGEND"
+        PL1["`**Customer/Supplier** →
+        Upstream dicte ses règles
+        Downstream s'adapte`"]
+        
+        PL2["`**Conformist** -.→  
+        Downstream accepte tout
+        Sans pouvoir d'influence`"]
+        
+        PL3["`**Anti-Corruption Layer** ↔
+        Traduction entre modèles
+        Protection de l'intégrité`"]
+    end
+    
+    %% Styles
+    classDef coreDomain fill:#FFD700,stroke:#FF8C00,stroke-width:3px,color:#000
+    classDef supportingDomain fill:#87CEEB,stroke:#4682B4,stroke-width:2px,color:#000
+    classDef genericDomain fill:#DDA0DD,stroke:#9370DB,stroke-width:2px,color:#000
+    classDef external fill:#FFA07A,stroke:#CD5C5C,stroke-width:2px,color:#000
+    classDef future fill:#98FB98,stroke:#32CD32,stroke-width:2px,color:#000
+    classDef legend fill:#F5F5F5,stroke:#696969,stroke-width:1px,color:#000
+    
+    class PRICING coreDomain
+    class BOOKING,SPACE supportingDomain
+    class ANALYTICS genericDomain
+    class PAY,CAL,IOT,EVENTS external
+    class SHARED,FRANCHISE future
+    class PL1,PL2,PL3 legend
