@@ -51,7 +51,7 @@ gantt
   - ✅ Documentation d'organisation
 
 ### Phase 1 - Analyse Stratégique ✅
-- **Statut** : ✅ Terminée - En attente validation
+- **Statut** : ✅ Terminée (mergée)
 - **Date** : 02/03/2026
 - **Branche** : `feat/phase-1-core-domain-analysis`
 - **PR** : #1 - https://github.com/benoit-bremaud/tp13-ddd-workspace-plus/pull/1
@@ -63,54 +63,52 @@ gantt
   - 📊 **Classification** : 1 Core + 3 Supporting + 4 Generic Domains
   - 🏗️ **Stratégie d'investissement** architectural définie
 
-### Phase 2 - Ubiquitous Language 🔄
-- **Statut** : 🔄 Prête à démarrer (après validation Phase 1)
-- **Estimation** : 2 jours
-- **Branche prévue** : `feat/phase-2-ubiquitous-language`
-- **Livrables prévus** :
+### Phase 2 - Ubiquitous Language ✅
+- **Statut** : ✅ Terminée (mergée)
+- **Branche** : `feat/phase-2-ubiquitous-language`
+- **PR** : #2 - https://github.com/benoit-bremaud/tp13-ddd-workspace-plus/pull/2
+- **Livrables** :
   - `analysis/phase-2-ubiquitous-language.md`
   - `docs/glossary.md` (dictionnaire des termes métier)
-- **Objectifs** :
-  - Clarifier les concepts ambigus (Réservation, Disponibilité, etc.)
-  - Établir le vocabulaire partagé développeurs/métier
-  - Résoudre les ambiguïtés sémantiques
 
-### Phase 3 - Modélisation Tactique ⏳
-- **Statut** : ⏳ Planifiée
-- **Estimation** : 3 jours
-- **Dépendance** : Validation Phase 2
+### Phase 3 - Modélisation Tactique ✅
+- **Statut** : ✅ Terminée (mergée)
+- **Branche** : `feat/phase-3-tactical-modeling`
+- **PR** : #3 - https://github.com/benoit-bremaud/tp13-ddd-workspace-plus/pull/3
 - **Complexité** : 🔴 Élevée (cœur du DDD tactique)
-- **Livrables prévus** :
+- **Livrables** :
   - `analysis/phase-3-tactical-modeling.md`
   - `diagrams/entities-value-objects.mmd`
   - `diagrams/aggregates.mmd` 
-  - `diagrams/domain-services.mmd`
+  - (services de domaine documentés dans l'analyse)
 
-### Phase 4 - Bounded Contexts ⏳
-- **Statut** : ⏳ Planifiée
-- **Estimation** : 2 jours  
+### Phase 4 - Bounded Contexts ✅
+- **Statut** : ✅ Terminée (mergée)
+- **Branche** : `feat/phase-4-bounded-contexts`
+- **PR** : #4 - https://github.com/benoit-bremaud/tp13-ddd-workspace-plus/pull/4
 - **Complexité** : 🟡 Moyenne
 - **Focus** : Architecture distribuée et Context Map
 
-### Phase 5 - Validation par Cas d'Usage ⏳
-- **Statut** : ⏳ Planifiée
-- **Estimation** : 2 jours
+### Phase 5 - Validation par Cas d'Usage ✅
+- **Statut** : ✅ Terminée (mergée)
+- **Branche** : `feat/phase-5-use-cases-validation`
+- **PR** : #5 - https://github.com/benoit-bremaud/tp13-ddd-workspace-plus/pull/5
 - **Complexité** : 🟡 Moyenne
 - **Criticité** : 🔥 Élevée (validation du modèle)
 
-### Phase 6 - Livrable Final ⏳
-- **Statut** : ⏳ Planifiée
-- **Estimation** : 2 jours
+### Phase 6 - Livrable Final 🔄
+- **Statut** : 🔄 En cours
+- **Branche** : `feat/phase-6-final-deliverable`
 - **Focus** : Document d'architecture professionnel
 
 ## Métriques de Progression
 
 ### Avancement Global
-- **Phases complétées** : 2/7 (29%)
-- **Analyses produites** : 183 lignes
-- **Diagrammes créés** : 1 (domain-overview)
-- **PRs soumises** : 1
-- **Commits effectués** : 5
+- **Phases complétées** : 5/6 (83%)
+- **Phase en cours** : Phase 6 (livrable final)
+- **Analyses produites** : phases 1 à 6 (en cours de finalisation)
+- **Diagrammes créés** : domain overview, entities/value objects, aggregates, context map, use-cases flow
+- **PRs mergées** : 5
 
 ### Qualité du Travail
 - ✅ **Méthodologie DDD** : Respectée (approche stratégique → tactique)
