@@ -1,0 +1,139 @@
+graph TB
+    subgraph "Agrégat Membre"
+        direction TB
+        M["`**Membre**
+        (Aggregate Root)
+        
+        • MembreId
+        • Statut métier
+        • Historique`"]
+        
+        A["`**Abonnement**
+        (Entity interne)
+        
+        • AbonnementId
+        • Type & période
+        • Collection crédits`"]
+        
+        M -->|compose| A
+        
+        VO1["`**Value Objects**
+        
+        • Adresse facturation
+        • Préférences membre
+        • Historique statuts`"]
+        
+        M -->|contient| VO1
+    end
+    
+    subgraph "Agrégat Réservation"
+        direction TB
+        R["`**Réservation**
+        (Aggregate Root)
+        
+        • ReservationId
+        • Workflow d'états
+        • Règles métier`"]
+        
+        VO2["`**Value Objects**
+        
+        • Créneau temporel
+        • Money (montant)
+        • Motif annulation`"]
+        
+        R -->|contient| VO2
+    end
+    
+    subgraph "Agrégat Site"
+        direction TB
+        S["`**Site**
+        (Aggregate Root)
+        
+        • SiteId
+        • Horaires ouverture
+        • Politiques locales`"]
+        
+        E["`**Espace**
+        (Entity interne)
+        
+        • EspaceId
+        • Caractéristiques
+        • Tarification`"]
+        
+        S -->|contient| E
+        
+        VO3["`**Value Objects**
+        
+        • Adresse site
+        • Horaires ouverture
+        • Politiques locales`"]
+        
+        S -->|contient| VO3
+    end
+    
+    %% Relations inter-agrégats (références uniquement)
+    R -.->|MembreId| M
+    R -.->|EspaceId| E
+    
+    %% Services de Domaine
+    subgraph "Services de Domaine"
+        PS["`**PricingService**
+        
+        Calcul prix selon:
+        • Type espace
+        • Abonnement membre
+        • Règles promotions`"]
+        
+        AC["`**AvailabilityCalculator**
+        
+        Vérification:
+        • Conflits réservations
+        • Horaires site
+        • Maintenance`"]
+        
+        RC["`**RefundCalculationService**
+        
+        Remboursement:
+        • Politique annulation
+        • Type abonnement
+        • Délais`"]
+    end
+    
+    %% Interactions services
+    PS -.->|consulte| M
+    PS -.->|consulte| E
+    AC -.->|consulte| E
+    AC -.->|consulte| R
+    RC -.->|consulte| R
+    RC -.->|consulte| M
+    
+    %% Invariants critiques
+    subgraph "Invariants Métier Protégés"
+        I1["`🔒 **Pas de double réservation**
+        
+        Protection inter-agrégats
+        via événements domaine`"]
+        
+        I2["`🔒 **Cohérence crédits**
+        
+        Protection intra-agrégat
+        Membre/Abonnement`"]
+        
+        I3["`🔒 **Intégrité financière**
+        
+        Protection via services
+        et immutabilité Money`"]
+    end
+    
+    %% Styles
+    classDef aggregateRoot fill:#2196F3,stroke:#0D47A1,stroke-width:3px,color:#fff
+    classDef entity fill:#64B5F6,stroke:#1976D2,stroke-width:2px,color:#fff
+    classDef valueObject fill:#E1F5FE,stroke:#0277BD,stroke-width:2px
+    classDef service fill:#4CAF50,stroke:#2E7D32,stroke-width:2px,color:#fff
+    classDef invariant fill:#FF9800,stroke:#E65100,stroke-width:2px,color:#fff
+    
+    class M,R,S aggregateRoot
+    class A,E entity
+    class VO1,VO2,VO3 valueObject
+    class PS,AC,RC service
+    class I1,I2,I3 invariant

@@ -1,0 +1,132 @@
+classDiagram
+    %% Classes d'Entités
+    class Réservation {
+        <<Entity>>
+        -ReservationId id
+        -MembreId membreId
+        -EspaceId espaceId
+        -Créneau créneau
+        -Money montant
+        -StatutReservation statut
+        -DateTime dateCreation
+        +confirmer(PaiementDetails) void
+        +annuler(MotifAnnulation) Money
+        +prolonger(NouvelleDuree) void
+        +calculerMontantDu() Money
+    }
+    
+    class Membre {
+        <<Entity>>
+        -MembreId id
+        -String nom
+        -Email email 
+        -Adresse adresseFacturation
+        -StatutMembre statut
+        -Abonnement abonnement
+        +souscrireAbonnement(TypeAbonnement) Abonnement
+        +effectuerReservation(EspaceId, Créneau) Réservation
+        +calculerStatutLoyauté() StatutLoyauté
+        +suspendre(Motif) void
+    }
+    
+    class Abonnement {
+        <<Entity>>
+        -AbonnementId id
+        -TypeAbonnement type
+        -DateTime dateDebut
+        -DateTime dateFin
+        -StatutAbonnement statut
+        -Collection~Crédit~ crédits
+        +calculerRemiseApplicable(TypeEspace) Percentage
+        +consommerCredits(Money) void
+        +renouvelerAutomatiquement() Abonnement
+    }
+    
+    class Espace {
+        <<Entity>>
+        -EspaceId id
+        -String nom
+        -TypeEspace type
+        -Integer capacité
+        -Collection~Equipement~ equipements
+        -Money tarifHoraire
+        -StatutEspace statut
+        +verifierDisponibilité(Créneau) Boolean
+        +calculerTarif(Durée, Abonnement) Money
+        +planifierMaintenance(Période) void
+    }
+    
+    class Site {
+        <<Entity>>
+        -SiteId id
+        -String nom
+        -Adresse adresse
+        -HorairesOuverture horaires
+        -Collection~Espace~ espaces
+        -StatutSite statut
+        +ajouterEspace(TypeEspace) Espace
+        +calculerTauxOccupation(Période) Percentage
+        +définirHoraires(Horaires) void
+    }
+    
+    %% Value Objects
+    class Money {
+        <<Value Object>>
+        -BigDecimal montant
+        -Currency devise
+        +add(Money) Money
+        +subtract(Money) Money
+        +multiply(Factor) Money
+        +appliquerRemise(Percentage) Money
+    }
+    
+    class Créneau {
+        <<Value Object>>
+        -DateTime dateDebut
+        -DateTime dateFin
+        +calculerDuree() Duration
+        +chevaucheAvec(Créneau) Boolean
+        +estDansHoraires(HorairesOuverture) Boolean
+        +diviserEn(Integer) Collection~Créneau~
+    }
+    
+    class Crédit {
+        <<Value Object>>
+        -Money valeur
+        -TypeCrédit type
+        -Date dateExpiration
+        +estValide(Date) Boolean
+        +peutCouvrir(Money) Boolean
+        +calculerReliquat(Money) Crédit
+    }
+    
+    class Adresse {
+        <<Value Object>>
+        -String rue
+        -String ville
+        -String codePostal
+        -String pays
+        +formaterPourAffichage() String
+        +calculerDistanceVers(Adresse) Distance
+        +valider() Boolean
+    }
+    
+    %% Relations principales
+    Membre ||--o| Abonnement : "possède"
+    Membre ||--o{ Réservation : "effectue"
+    Réservation ||--|| Créneau : "contient"
+    Réservation ||--|| Money : "montant"
+    Abonnement ||--o{ Crédit : "contient"
+    Site ||--o{ Espace : "héberge"
+    Site ||--|| Adresse : "situé à"
+    Membre ||--|| Adresse : "facturé à"
+    
+    %% Références inter-agrégats
+    Réservation ..> Espace : "référence EspaceId"
+    
+    %% Légende des couleurs
+    classDef entityStyle fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    classDef valueObjectStyle fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    
+    class Réservation,Membre,Abonnement,Espace,Site entityStyle
+    class Money,Créneau,Crédit,Adresse valueObjectStyle
