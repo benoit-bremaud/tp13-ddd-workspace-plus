@@ -1,0 +1,83 @@
+graph TB
+    subgraph "Core Domain - Différenciation Concurrentielle"
+        CD["`**Politique Tarifaire &
+        Optimisation d'Occupation**
+        
+        • Calcul prix dynamique
+        • Optimisation allocation
+        • Gestion crédits abonnement
+        • Politiques remboursement`"]
+        
+        style CD fill:#e1f5fe,stroke:#01579b,stroke-width:3px
+    end
+    
+    subgraph "Supporting Domains - Nécessaires mais Standards"
+        SD1["`**Gestion Réservations**
+        
+        • Validation disponibilité
+        • Gestion conflits
+        • Annulations/modifications`"]
+        
+        SD2["`**Gestion Abonnements**
+        
+        • Activation/suspension
+        • Gestion quotas
+        • Renouvellement auto`"]
+        
+        SD3["`**Gestion Espaces**
+        
+        • Classification espaces
+        • Équipements/services
+        • Maintenance`"]
+        
+        style SD1 fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+        style SD2 fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+        style SD3 fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    end
+    
+    subgraph "Generic Domains - Externalisables"
+        GD1["`**Authentification**
+        
+        • Auth0/Keycloak
+        • Gestion identités`"]
+        
+        GD2["`**Paiements**
+        
+        • Stripe/PayPal
+        • Transactions`"]
+        
+        GD3["`**Notifications**
+        
+        • SendGrid/Twilio
+        • Communications`"]
+        
+        GD4["`**Analytics**
+        
+        • Solutions BI
+        • Métriques standard`"]
+        
+        style GD1 fill:#e8f5e8,stroke:#1b5e20,stroke-width:1px
+        style GD2 fill:#e8f5e8,stroke:#1b5e20,stroke-width:1px
+        style GD3 fill:#e8f5e8,stroke:#1b5e20,stroke-width:1px
+        style GD4 fill:#e8f5e8,stroke:#1b5e20,stroke-width:1px
+    end
+    
+    %% Relations fonctionnelles
+    CD -->|utilise| SD1
+    CD -->|s'appuie sur| SD2
+    CD -->|optimise| SD3
+    SD1 -->|déclenche| GD2
+    SD1 -->|notifie via| GD3
+    SD2 -->|authentifie via| GD1
+    SD3 -->|analyse via| GD4
+    
+    %% Légende
+    subgraph "Investissement Architecturel"
+        L1["`🔥 **Maximum** - Architecture DDD sophistiquée`"]
+        L2["`⚡ **Modéré** - Architecture propre standard`"]
+        L3["`📦 **Minimal** - Intégration services externes`"]
+        
+        style L1 fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+        style L2 fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+        style L3 fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
+    end
