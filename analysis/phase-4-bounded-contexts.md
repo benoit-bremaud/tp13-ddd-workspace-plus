@@ -198,7 +198,7 @@ Analytics Service consomme via événements :
 
 #### Intégrations Systèmes Externes
 
-Chaque contexte exposed aux intégrations externes utilise des **Anti-Corruption Layers** :
+Chaque contexte exposé aux intégrations externes utilise des **Anti-Corruption Layers** :
 
 **Pricing Context ↔ Payment Systems**
 ```
@@ -290,7 +290,7 @@ L'architecture des Bounded Contexts anticipe l'**extension aux franchisés** men
 - **Isolation des données** : Chaque franchisé maîtrise ses données clients
 - **Customisation** : Politiques tarifaires spécifiques par franchise
 - **Scalabilité** : Croissance indépendante par région
-- **Résilience** : Panne d'un franchisé n'affect pas les autres
+- **Résilience** : Panne d'un franchisé n'affecte pas les autres
 
 ### Shared Services Architecture
 
@@ -332,7 +332,7 @@ Cette architecture de Bounded Contexts transforme l'analyse tactique en **bluepr
 - **Supporting Domains** : Booking et Space avec architectures adaptées
 - **Scalabilité** : Préparation multi-tenant pour croissance
 
-### Benefits Architecturaux
+### Bénéfices architecturaux
 
 - **Team Autonomy** : Équipes peuvent développer indépendamment leurs contextes
 - **Technology Flexibility** : Chaque contexte peut choisir sa stack optimale  

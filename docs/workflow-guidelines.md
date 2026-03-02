@@ -34,7 +34,6 @@
   - `analysis/phase-3-tactical-modeling.md`
   - `diagrams/entities-value-objects.mmd`
   - `diagrams/aggregates.mmd`
-  - `diagrams/domain-services.mmd`
 - **PR** : #3 - Mergée
 - **Statut** : ✅ Terminée
 
@@ -59,8 +58,8 @@
 - **Livrables** :
   - `analysis/phase-6-synthesis.md`
   - `docs/architecture-document.md` (document final)
-- **PR** : #6 - En préparation
-- **Statut** : 🔄 En cours
+- **PR** : #6 - Mergée
+- **Statut** : ✅ Terminée
 
 ## Convention de Commits
 
@@ -82,7 +81,7 @@
 
 ### Scopes par Phase
 - `setup` : Configuration initiale
-- `analysis` : Analyses métier et strategiques
+- `analysis` : Analyses métier et stratégiques
 - `diagrams` : Schémas et visualisations
 - `docs` : Documentation générale
 
@@ -132,7 +131,7 @@ chore(setup): initialize project structure and GitHub integration
 ### 📋 Traçabilité
 - Chaque décision DDD **justifiée et documentée**
 - Liens entre phases **explicites**  
-- Evolution des concepts **tracée**
+- Évolution des concepts **tracée**
 
 ### 🎯 Focus Qualité
 - **Argumentation rigoureuse** pour chaque concept DDD

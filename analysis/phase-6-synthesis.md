@@ -44,13 +44,13 @@ L'objectif est de produire une vision **cohérente, argumentée et exploitable**
 
 ## 6.2 Décisions d'architecture structurantes
 
-## 1) Le Core Domain comme centre de gravité
+### 1) Le Core Domain comme centre de gravité
 
 Le cœur différenciant n'est pas la réservation brute, mais la capacité de WorkSpace+ à optimiser revenus et occupation via une politique tarifaire dynamique.
 
 Conséquence : le contexte Pricing & Subscription reçoit l'autonomie et la qualité de modélisation les plus élevées.
 
-## 2) Modèle tactique centré invariants
+### 2) Modèle tactique centré invariants
 
 Les agrégats ont été définis pour protéger les invariants métier les plus sensibles :
 
@@ -59,13 +59,13 @@ Les agrégats ont été définis pour protéger les invariants métier les plus 
 - intégrité des montants/remboursements ;
 - contrôle d'accès selon statut d'abonnement.
 
-## 3) Context Map orientée dépendances explicites
+### 3) Context Map orientée dépendances explicites
 
 - Booking dépend de Pricing (prix/éligibilité) et Space (disponibilité/lock).
 - Analytics adopte une posture Conformist en lecture/projection.
 - Les intégrations externes sont isolées via ACL.
 
-## 4) Consistance différenciée par criticité
+### 4) Consistance différenciée par criticité
 
 - **Strong consistency** sur les conflits de réservation.
 - **Saga/compensation** pour les transactions métier longues.
@@ -95,14 +95,14 @@ L'architecture est préparée pour la montée en charge fonctionnelle (nouvelles
 
 ## 6.4 Risques résiduels et recommandations
 
-## Risques résiduels
+### Risques résiduels
 
 1. **Variabilité tarifaire en session** : nécessité de figer explicitement la tarification lors des paiements.
 2. **Idempotence externe** : risque de double exécution sur incidents réseau si non systématisée.
 3. **Gouvernance événements** : besoin de discipline de versioning pour éviter les ruptures inter-contextes.
 4. **Dette de documentation opérationnelle** : SLA et procédures d'incident à formaliser avant production.
 
-## Recommandations prioritaires
+### Recommandations prioritaires
 
 1. Introduire un **TarificationSnapshot** versionné côté Booking.
 2. Généraliser les **clés d'idempotence** sur paiement/remboursement.

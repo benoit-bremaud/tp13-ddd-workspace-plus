@@ -6,7 +6,7 @@ La Phase 3 marque la transition cruciale entre la **compréhension stratégique*
 
 L'objectif n'est plus seulement de **nommer** les concepts métier, mais de déterminer **comment ils collaborent** pour protéger les invariants business et encapsuler la complexité métier différenciante de WorkSpace+.
 
-Cette phase applique les patterns tactiques du DDD : Entités, Value Objects, Agrégats, et Services de Domaine. Chaque décision architectural doit être **justifiée métier** et **alignée** avec le Core Domain identifié.
+Cette phase applique les patterns tactiques du DDD : Entités, Value Objects, Agrégats, et Services de Domaine. Chaque décision architecturale doit être **justifiée métier** et **alignée** avec le Core Domain identifié.
 
 ## 3.1 Entités : Identité et Cycle de Vie Métier
 

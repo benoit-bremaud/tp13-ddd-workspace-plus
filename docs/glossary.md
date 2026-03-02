@@ -31,7 +31,7 @@ Ce glossaire constitue la source unique de vérité pour tous les concepts méti
 
 **Type DDD :** Value Object immuable
 
-**Types possibles :** `Heures`, `Jours`, `Euros`
+**Types possibles :** `Heures`, `Euros`, `Points`
 
 **Propriétés :** Montant, Type, Date d'expiration, Règles de consommation
 
