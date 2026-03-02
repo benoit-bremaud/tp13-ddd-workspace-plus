@@ -1,0 +1,108 @@
+flowchart TB
+    START([Validation métier Phase 5])
+
+    subgraph UC1[UC-01 · Réservation confirmée]
+        U1A[Membre choisit espace + créneau]
+        U1B[Booking crée Réservation Provisoire - TTL 10 min]
+        U1C[Space vérifie disponibilité + lock distribué]
+        U1D[Pricing calcule le montant final]
+        U1E[ACL Paiement traite la transaction]
+        U1F{Paiement validé ?}
+        U1G[Booking confirme la réservation]
+        U1H[Space marque le créneau occupé]
+        U1I[Event ReservationConfirmed]
+        U1J[Analytics met à jour les KPI]
+        U1K[Compensation: libération lock + expiration]
+
+        U1A --> U1B --> U1C --> U1D --> U1E --> U1F
+        U1F -->|Oui| U1G --> U1H --> U1I --> U1J
+        U1F -->|Non| U1K
+    end
+
+    subgraph UC2[UC-02 · Conflit concurrent]
+        U2A[Deux membres demandent le même créneau]
+        U2B[Booking demande lock à Space]
+        U2C{Lock accordé ?}
+        U2D[Flux A continue vers UC-01]
+        U2E[Flux B refusé: indisponible]
+        U2F[Libération automatique du lock à expiration TTL]
+
+        U2A --> U2B --> U2C
+        U2C -->|Oui| U2D --> U2F
+        U2C -->|Non| U2E
+    end
+
+    subgraph UC3[UC-03 · Annulation & remboursement]
+        U3A[Membre demande annulation]
+        U3B[Booking vérifie éligibilité]
+        U3C[RefundCalculationService calcule le remboursement]
+        U3D[ACL Paiement exécute le remboursement]
+        U3E{Remboursement OK ?}
+        U3F[Réservation passe à Annulée]
+        U3G[Space libère le créneau]
+        U3H[Event ReservationCancelled]
+        U3I[Analytics met à jour revenus et occupation]
+        U3J[Retry idempotent en cas d'échec technique]
+
+        U3A --> U3B --> U3C --> U3D --> U3E
+        U3E -->|Oui| U3F --> U3G --> U3H --> U3I
+        U3E -->|Non| U3J
+    end
+
+    subgraph UC4[UC-04 · Suspension abonnement]
+        U4A[Incident de facturation détecté]
+        U4B[Pricing passe Abonnement à Suspendu]
+        U4C[Event MemberSubscriptionChanged]
+        U4D[Booking refuse les nouvelles réservations]
+        U4E[Régularisation paiement]
+        U4F[Pricing repasse Abonnement à Actif]
+        U4G[Nouvelles réservations autorisées]
+
+        U4A --> U4B --> U4C --> U4D --> U4E --> U4F --> U4G
+    end
+
+    subgraph UC5[UC-05 · Changement tarifaire en cours]
+        U5A[Pricing calcule un prix avec règle Vn]
+        U5B[Booking garde ce prix pendant TTL]
+        U5C[Pricing publie une nouvelle règle Vn+1]
+        U5D{Paiement finalisé dans TTL ?}
+        U5E[Confirmation au prix Vn]
+        U5F[Recalcul au prix Vn+1]
+        U5G[Traçabilité version de règle]
+
+        U5A --> U5B --> U5C --> U5D
+        U5D -->|Oui| U5E --> U5G
+        U5D -->|Non| U5F --> U5G
+    end
+
+    START --> UC1
+    START --> UC2
+    START --> UC3
+    START --> UC4
+    START --> UC5
+
+    INV1[[Invariant validé: pas de confirmation sans paiement]]
+    INV2[[Invariant validé: pas de double réservation]]
+    INV3[[Invariant validé: intégrité financière]]
+    INV4[[Invariant validé: membre Suspendu bloqué]]
+    INV5[[Recommandation: snapshot tarifaire versionné]]
+
+    U1J --> INV1
+    U2E --> INV2
+    U3I --> INV3
+    U4D --> INV4
+    U5G --> INV5
+
+    classDef booking fill:#BBDEFB,stroke:#1565C0,stroke-width:2px,color:#000;
+    classDef pricing fill:#FFE0B2,stroke:#EF6C00,stroke-width:2px,color:#000;
+    classDef space fill:#C8E6C9,stroke:#2E7D32,stroke-width:2px,color:#000;
+    classDef analytics fill:#E1BEE7,stroke:#6A1B9A,stroke-width:2px,color:#000;
+    classDef ext fill:#FFCDD2,stroke:#C62828,stroke-width:2px,color:#000;
+    classDef check fill:#FFF9C4,stroke:#F9A825,stroke-width:2px,color:#000;
+
+    class U1B,U1G,U2B,U3A,U3B,U3F,U4D,U5B booking;
+    class U1D,U4B,U4F,U5A,U5C pricing;
+    class U1C,U1H,U2C,U2F,U3G space;
+    class U1J,U3I,U5G analytics;
+    class U1E,U3D ext;
+    class INV1,INV2,INV3,INV4,INV5 check;
