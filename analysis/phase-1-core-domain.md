@@ -153,7 +153,7 @@ Pour identifier le Core Domain de WorkSpace+, j'ai analysé les différents aspe
 #### Investissement Maximum (Core Domain)
 - **Architecture sophistiquée** : Patterns DDD avancés, tests exhaustifs
 - **Expertise métier** : Collaboration étroite avec les experts business
-- **Performance optimisée** : Caching, optimisation algorithimique
+- **Performance optimisée** : Caching, optimisation algorithmique
 - **Flexibilité maximale** : Capacité d'évolution rapide
 
 #### Investissement Modéré (Supporting Domains)
